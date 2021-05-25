@@ -221,13 +221,23 @@ function SerialAdapterXtermJS(element, bus)
     if(!window["Terminal"])
     {
         return;
-    }
+    }    
 
-    var term = this.term = new window["Terminal"]();
-    term["setOption"]("logLevel", "off");
-    term.write("This is the serial console. Whatever you type or paste here will be sent to COM1");
+    this.term = new window["Terminal"]({
+        cursorBlink: "true",
+        cursorStyle: "underline",
+        logLevel: "off"
+    });
 
-    term["onData"](function(data) {
+    // xterm-addon-fit
+    if(window["FitAddon"])
+    {
+        this.fitAddon = new window["FitAddon"]["FitAddon"]();
+        this.term.loadAddon(this.fitAddon); 
+    } 
+
+    this.term.onData(function(data) 
+    {
         for(let i = 0; i < data.length; i++)
         {
             bus.send("serial0-input", data.charCodeAt(i));
@@ -236,11 +246,13 @@ function SerialAdapterXtermJS(element, bus)
 
     bus.register("serial0-output-char", function(chr)
     {
-        term.write(chr);
+        this.term.write(chr);
     }, this);
 }
 
 SerialAdapterXtermJS.prototype.show = function()
 {
     this.term && this.term.open(this.element);
+    // xterm-addon-fit
+    this.fitAddon && this.fitAddon.fit();
 };
