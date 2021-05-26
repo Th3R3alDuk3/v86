@@ -1090,6 +1090,22 @@ V86Starter.prototype.serial0_send = function(data)
 };
 
 /**
+ * Send a string to the first emulated serial terminal and append linebreak.
+ *
+ * @param {string} data
+ * @export
+ */
+ V86Starter.prototype.serial0_send_line = function(data)
+ {
+     for(var i = 0; i < data.length; i++)
+     {
+         this.bus.send("serial0-input", data.charCodeAt(i));
+     }
+
+     this.bus.send("serial0-input", 10);
+ };
+
+/**
  * Send bytes to a serial port (to be received by the emulated PC).
  *
  * @param {Uint8Array} data

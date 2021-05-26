@@ -235,6 +235,9 @@ function SerialAdapterXtermJS(element, bus)
         this.fitAddon = new window["FitAddon"]["FitAddon"]();
         this.term.loadAddon(this.fitAddon); 
     } 
+    
+    this.term.writeln("This is the serial console.");
+    this.term.writeln("Whatever you type or paste here will be sent to COM1.");
 
     this.term.onData(function(data) 
     {
